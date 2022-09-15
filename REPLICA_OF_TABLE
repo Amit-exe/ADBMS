@@ -1,0 +1,54 @@
+use sies;
+
+create table reservation(
+bkid int primary key not null,
+custname varchar(20) not null,
+destination varchar(20) not null,
+class varchar(30) not null,
+cost int not null);
+
+use sies2;
+
+create table reservebook as select * from sies.reservation;
+USE SIES;
+DELIMITER $$
+CREATE TRIGGER inres
+AFTER INSERT
+ON reservation FOR EACH ROW
+BEGIN 
+		insert INTO reservation 
+		valueS (NEW.BKID,NEW.CUSTNAME,NEW.DESTINATION, NEW.CLASS,NEW.COST);
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER UPres
+AFTER UPDATE
+ON reservation FOR EACH ROW
+BEGIN 
+		UPDATE SIES2.reservebook
+		SET
+        CUSTNAME=NEW.CUSTNAME,DESTINATION=NEW.DESTINATION,CLASS=NEW.CLASS,COST=NEW.COST 
+        WHERE BKID = OLD.BKID;
+		
+END $$
+DELIMITER ;
+
+USE SIES;
+DELIMITER $$
+CREATE TRIGGER DELRES
+AFTER DELETE
+ON RESERVATION FOR EACH ROW
+BEGIN 
+		DELETE FROM SIES2.reservebook
+		
+        WHERE BKID = OLD.BKID;
+		
+END $$
+DELIMITER ;
+
+insert INTO RESERVATION VALUES (1,'AMIT','CHEMBUR','1ST',21323);
+
+
+
+
